@@ -63,7 +63,7 @@ public class TESTPDFBox extends PDFTextStripper {
             System.out.println("> " + range);
         }
         //Print out all ranges
-        List<Range<Integer>> trapRanges = trapRangeBuilder.build();
+        List<Range<Float>> trapRanges = trapRangeBuilder.build();
         for (Range trapRange : trapRanges) {
             System.out.println("TrapRange: " + trapRange);
         }

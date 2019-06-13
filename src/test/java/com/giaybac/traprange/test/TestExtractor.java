@@ -13,7 +13,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
 
@@ -40,12 +43,32 @@ public class TestExtractor {
         String sourceDirectory = Paths.get(homeDirectory, "_Docs").toString();
         String resultDirectory = Paths.get(homeDirectory, "_Docs", "result").toString();
         
-        for (int idx = 0; idx < 5; idx++) {
+        for (int idx = 0; idx < 1; idx++) {
             PDFTableExtractor extractor = (new PDFTableExtractor())
-                    .setSource(sourceDirectory + File.separator + "sample-" + (idx + 1) + ".pdf");
+                    .setSource(sourceDirectory + File.separator + "hzdata1.pdf");
+//                    .setSource(sourceDirectory + File.separator + "sample-" + (idx + 1) + ".pdf");
             switch (idx) {
                 case 0: {
-                    extractor.exceptLine(new int[]{0, 1, -1});
+                    extractor.addPage(24);
+                    List<Integer> a = new ArrayList<Integer>();
+                    // a.add(0);
+                    //a.add(-1);
+                    /*
+                    for (int i=0; i<23; i++) {
+                        a.add(i);
+                    }
+                    /*
+                    for (int j = 6; j< 30;j++) {
+                        a.add(j);
+                    }
+                    */
+
+                    int[] array = new int[a.size()];
+                    for (int aidx=0;aidx<a.size();aidx++) {
+                        array[aidx] = a.get(aidx);
+                    }
+                    // a.stream().mapToInt(i->i).toArray();
+                    extractor.exceptLine(array);
                     break;
                 }
                 case 1: {

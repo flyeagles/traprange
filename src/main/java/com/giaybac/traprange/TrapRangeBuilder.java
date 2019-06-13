@@ -22,7 +22,7 @@ public class TrapRangeBuilder {
     //--------------------------------------------------------------------------
     //  Members
     private final Logger logger = LoggerFactory.getLogger(TrapRangeBuilder.class);
-    private final List<Range<Integer>> ranges = new ArrayList<>();
+    private final List<Range<Float>> ranges = new ArrayList<>();
 
     //--------------------------------------------------------------------------
     //  Initialization and releasation
@@ -30,8 +30,16 @@ public class TrapRangeBuilder {
     //  Getter N Setter
     //--------------------------------------------------------------------------
     //  Method binding
-    public TrapRangeBuilder addRange(Range<Integer> range) {
+    public TrapRangeBuilder addRange(Range<Float> range) {
         ranges.add(range);
+        return this;
+    }
+
+    public TrapRangeBuilder addRangeList(List<Range<Float>> ranges) {
+        for (Range<Float> range: ranges) {
+            addRange(range);
+        }
+        logger.debug("ranges: " + ranges.size());
         return this;
     }
 
@@ -40,8 +48,9 @@ public class TrapRangeBuilder {
      *
      * @return
      */
-    public List<Range<Integer>> build() {
-        List<Range<Integer>> retVal = new ArrayList<>();
+    public List<Range<Float>> build() {
+        List<Range<Float>> retVal = new ArrayList<>();
+
         //order range by lower Bound
         Collections.sort(ranges, new Comparator<Range>() {
             @Override
@@ -50,21 +59,22 @@ public class TrapRangeBuilder {
             }
         });
 
-        for (Range<Integer> range : ranges) {
+        for (Range<Float> range : ranges) {
             if (retVal.isEmpty()) {
                 retVal.add(range);
+                continue;
+            } 
+
+            Range<Float> lastRange = retVal.get(retVal.size() - 1);
+            if (lastRange.isConnected(range)) {
+                Range newLastRange = lastRange.span(range);
+                retVal.set(retVal.size() - 1, newLastRange);
             } else {
-                Range<Integer> lastRange = retVal.get(retVal.size() - 1);
-                if (lastRange.isConnected(range)) {
-                    Range newLastRange = lastRange.span(range);
-                    retVal.set(retVal.size() - 1, newLastRange);
-                } else {
-                    retVal.add(range);
-                }
+                retVal.add(range);
             }
         }
         //debug
-        logger.debug("Found " + retVal.size() + " trap-range(s)");
+        logger.debug("Found " + retVal.size() + " trap-range(s) from " + ranges.size());
         //return
         return retVal;
     }
